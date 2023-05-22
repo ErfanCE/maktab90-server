@@ -190,7 +190,7 @@
 								},
 								{
 									"key": "name",
-									"value": "iPhone 15 pro Max",
+									"value": "iPhone 14 pro Max",
 									"type": "text"
 								},
 								{
@@ -216,12 +216,14 @@
 								{
 									"key": "thumbnail",
 									"type": "file",
-									"src": []
+									"src": [],
+									"disabled": true
 								},
 								{
 									"key": "images",
 									"type": "file",
-									"src": []
+									"src": [],
+									"disabled": true
 								}
 							]
 						},
@@ -400,7 +402,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/products/644dd57f28caef581ead2ae5",
+							"raw": "http://localhost:8000/api/products/64662f248f46842f36b8d63d",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -409,7 +411,7 @@
 							"path": [
 								"api",
 								"products",
-								"644dd57f28caef581ead2ae5"
+								"64662f248f46842f36b8d63d"
 							]
 						}
 					},
@@ -457,7 +459,8 @@
 								{
 									"key": "icon",
 									"type": "file",
-									"src": []
+									"src": [],
+									"disabled": true
 								}
 							]
 						},
@@ -533,7 +536,8 @@
 								{
 									"key": "icon",
 									"type": "file",
-									"src": "/Users/Erfan/Downloads/IMG_3791.PNG"
+									"src": [],
+									"disabled": true
 								}
 							]
 						},
@@ -656,7 +660,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"category\": \"644b28f10b779ab7f962fc7d\",\n    \"name\": \"erfan ghazi\"\n}",
+							"raw": "{\n    \"category\": \"644b28f10b779ab7f962fc7d\",\n    \"name\": \"changedname\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -949,7 +953,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstname\": \"zahra\",\n    \"lastname\": \"mohammadi\",\n    \"username\": \"zahra_mohammadi\",\n    \"password\": \"user1234\",\n    \"phoneNumber\": \"09122211777\",\n    \"address\": \"Gilan-piroozi\"\n}",
+							"raw": "{\n    \"firstname\": \"user\",\n    \"lastname\": \"user\",\n    \"username\": \"user\",\n    \"password\": \"user1234\",\n    \"phoneNumber\": \"09122211777\",\n    \"address\": \"Gilan-piroozi\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

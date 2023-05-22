@@ -9,6 +9,9 @@ const Product = require('../models/product-model');
 const Category = require('../models/category-model');
 const Subcategory = require('../models/subcategory-model');
 
+const productsThumbnailsDefault = 'products-thumbnails-default.jpeg';
+const productsImagesDefault = ['products-images-default.jpeg'];
+
 //** Services
 //? consider diskStorage for multi fields images, avoid memory overflow
 const uploadProductImages = multerUpload.fields([
@@ -145,9 +148,11 @@ const addProduct = async (req, res, next) => {
 	});
 
 	//? for required images and thumbnail, use resize + validation before save(create)
-	//? or use default thumbnail and default [image] (no need validation)
-	product.images = await resizeProductImages(product._id, req.files);
-	product.thumbnail = await resizeProductThumbnail(product._id, req.files);
+	const thumbnail = await resizeProductThumbnail(product._id, req.files);
+	const images = await resizeProductImages(product._id, req.files);
+
+	product.images = images.length ? images : productsImagesDefault;
+	product.thumbnail = thumbnail ?? productsThumbnailsDefault;
 	product.save({ validateModifiedOnly: true });
 
 	res.status(201).json({
@@ -231,7 +236,8 @@ const editProductById = async (req, res, next) => {
 	}
 
 	const thumbnail = await resizeProductThumbnail(productId, req.files ?? {});
-	if (!!thumbnail) {
+
+	if (!!thumbnail && product.thumbnail !== productsThumbnailsDefault) {
 		await access(
 			join(
 				__dirname,
@@ -246,7 +252,7 @@ const editProductById = async (req, res, next) => {
 	}
 
 	const images = await resizeProductImages(productId, req.files ?? {});
-	if (!!images.length) {
+	if (!!images.length && !product.images.includes(productsImagesDefault)) {
 		//? use Promise.all
 		for (const image of product.images) {
 			await access(
@@ -291,21 +297,29 @@ const removeProductById = async (req, res, next) => {
 		return next(new AppError(404, `product: ${productId} not found`));
 	}
 
-	await access(
-		join(__dirname, '../public/images/products/thumbnails', product.thumbnail),
-		constants.F_OK
-	);
-	await unlink(
-		join(__dirname, '../public/images/products/thumbnails', product.thumbnail)
-	);
-
-	//? use Promise.all
-	for (const image of product.images) {
+	if (product.thumbnail !== productsThumbnailsDefault) {
 		await access(
-			join(__dirname, '../public/images/products/images', image),
+			join(
+				__dirname,
+				'../public/images/products/thumbnails',
+				product.thumbnail
+			),
 			constants.F_OK
 		);
-		await unlink(join(__dirname, '../public/images/products/images', image));
+		await unlink(
+			join(__dirname, '../public/images/products/thumbnails', product.thumbnail)
+		);
+	}
+
+	if (!product.images.includes(productsImagesDefault)) {
+		//? use Promise.all
+		for (const image of product.images) {
+			await access(
+				join(__dirname, '../public/images/products/images', image),
+				constants.F_OK
+			);
+			await unlink(join(__dirname, '../public/images/products/images', image));
+		}
 	}
 
 	res.status(200).json({

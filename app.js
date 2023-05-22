@@ -10,7 +10,7 @@ const apiRouter = require('./routers/api-router');
 
 const app = express();
 
-// Database Connection
+// database Connection
 connectToDatabase().then(() => addAdmin());
 
 // body parser

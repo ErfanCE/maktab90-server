@@ -41,14 +41,15 @@ const ProductSchema = new Schema(
 			required: [true, 'description is required'],
 			trim: true
 		},
-		// TODO: default image for thumbnail
 		thumbnail: {
 			type: String,
-			trim: true
+			trim: true,
+			default: 'products-thumbnails-default.jpeg'
 		},
 		images: {
 			type: [String],
-			trim: true
+			trim: true,
+			default: ['products-images-default.jpeg']
 		},
 		rating: {
 			rate: {

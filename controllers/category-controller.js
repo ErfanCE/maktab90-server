@@ -8,6 +8,8 @@ const sharp = require('sharp');
 const Category = require('../models/category-model');
 const Subcategory = require('../models/subcategory-model');
 
+const categoriesIconsDefault = 'categories-icons-default.png';
+
 //** services
 const uploadCategoryIcon = multerUpload.single('icon');
 
@@ -71,10 +73,11 @@ const addCategory = async (req, res, next) => {
 	}
 
 	//? for required icon, use category name(unique) instead of id and call resize + validation before create
-	//? or use default icon for category (no need validation)
 	const category = await Category.create({ name: categoryName });
 
-	category.icon = await resizeCategoryIcon(category._id, req.file);
+	const icon = await resizeCategoryIcon(category._id, req.file);
+
+	category.icon = icon ?? categoriesIconsDefault;
 	await category.save({ validateModifiedOnly: true });
 
 	res.status(201).json({
@@ -120,7 +123,7 @@ const editCategoryById = async (req, res, next) => {
 	}
 
 	const icon = await resizeCategoryIcon(categoryId, req.file);
-	if (!!icon) {
+	if (!!icon && category.icon !== categoriesIconsDefault) {
 		await access(
 			join(__dirname, '../public/images/categories/icons', category.icon),
 			constants.F_OK
@@ -156,13 +159,15 @@ const removeCategoryById = async (req, res, next) => {
 		category: category._id
 	});
 
-	await access(
-		join(__dirname, '../public/images/categories/icons', category.icon),
-		constants.F_OK
-	);
-	await unlink(
-		join(__dirname, '../public/images/categories/icons', category.icon)
-	);
+	if (category.icon !== categoriesIconsDefault) {
+		await access(
+			join(__dirname, '../public/images/categories/icons', category.icon),
+			constants.F_OK
+		);
+		await unlink(
+			join(__dirname, '../public/images/categories/icons', category.icon)
+		);
+	}
 
 	res.status(200).json({
 		status: 'success',
